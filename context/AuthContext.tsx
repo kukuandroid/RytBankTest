@@ -1,5 +1,6 @@
 // app/context/AuthContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { postApi } from '../utils/api';
 import { User, clearAuthData, getToken, getUser, saveToken, saveUser } from '../utils/storage';
 
 interface AuthContextType {
@@ -15,7 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
+        throw new Error('usreAuth must be used within an AuthProvider');
     }
     return context;
 };
@@ -48,9 +49,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     const login = async (username: string, password: string) => {
-        try {
+        try {   
             // Mock API call - replace with your actual API
-            const response = await mockLogin(username, password);
+            const response = await postApi<{ user: User; token: string }>('/auth/login', { username, password });
+            console.log("🚀 ~ login ~ response:", response)
 
             // Save auth data
             await Promise.all([
