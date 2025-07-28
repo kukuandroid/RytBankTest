@@ -1,15 +1,26 @@
+import { Colors } from '@/constants/Colors';
 import { Stack } from 'expo-router';
 
 export default function DashboardLayout() {
     return (
-        <Stack screenOptions={{ headerShown: false }}>
+        <Stack >
+            <Stack.Screen
+                name="contact-list"
+                options={{
+                    title: 'Contact List',
+                    headerStyle: { backgroundColor: Colors.light.background },
+                    headerTitleStyle: { color: "#fff" },
+                }}
+            />
             <Stack.Screen
                 name="transfer"
                 options={{
                     title: 'Transfer Funds',
-                    headerShown: true,
+                    headerStyle: { backgroundColor: Colors.light.background },
+                    headerTitleStyle: { color: "#fff" },
                 }}
             />
+
         </Stack>
     );
 }
