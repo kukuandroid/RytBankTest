@@ -90,23 +90,3 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         </AuthContext.Provider>
     );
 };
-
-// Mock login function - replace with your actual API call
-const mockLogin = async (username: string, password: string): Promise<{ user: User; token: string }> => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Mock validation
-    if (username === 'fatimah' && password === 'pass1234') {
-        return {
-            user: {
-                id: '1',
-                username: 'test@example.com',
-                name: 'John Doe'
-            },
-            token: 'mock-jwt-token-12345'
-        };
-    }
-
-    throw new Error('Invalid email or password');
-};
