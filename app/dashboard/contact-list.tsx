@@ -1,7 +1,7 @@
 import * as Contacts from 'expo-contacts';
 import { router } from 'expo-router';
 import React from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const getAcronym = (name: string = '') => {
   return name
@@ -34,12 +34,15 @@ export default function ContactList() {
   const [hasNextPage, setHasNextPage] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const [pageOffset, setPageOffset] = React.useState(0);
+  const [permissionDenied, setPermissionDenied] = React.useState(false);
   const PAGE_SIZE = 50;
 
   const fetchContacts = async (offset = 0) => {
     setLoading(true);
     const { status } = await Contacts.requestPermissionsAsync();
+    console.log("🚀 ~ fetchContacts ~ status:", status)
     if (status === 'granted') {
+      setPermissionDenied(false);
       const { data, hasNextPage: next } = await Contacts.getContactsAsync({
         pageOffset: offset,
         pageSize: PAGE_SIZE,
@@ -47,6 +50,8 @@ export default function ContactList() {
       setContacts(prev => offset === 0 ? data : [...prev, ...data]);
       setHasNextPage(next);
       setPageOffset(offset + PAGE_SIZE);
+    } else {
+      setPermissionDenied(true);
     }
     setLoading(false);
   };
@@ -65,25 +70,70 @@ export default function ContactList() {
     router.push({ pathname: '/dashboard/transfer-amount', params: { contactId: item.id, name: item.name, phoneNumber: item?.phoneNumbers?.[0]?.number } });
   };
 
+  const retryPermissions = () => {
+    // open settings to allow permissions
+    Linking.openSettings()
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>Choose Contacts</Text>
       </View>
-      <FlatList
-        data={contacts}
-        keyExtractor={item => item.id ?? ''}
-        renderItem={({ item }) => <ContactItem {...item} onPress={proceedAmount} />}
-        contentContainerStyle={{ paddingBottom: 24 }}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={loading ? <Text style={{ textAlign: 'center', marginVertical: 12 }}>Loading...</Text> : null}
-      />
+      {permissionDenied ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyTitle}>Permission Required</Text>
+          <Text style={styles.emptyDesc}>To show your contacts, please allow access to your contacts in device contact permission settings.</Text>
+          <TouchableOpacity style={styles.retryBtn} onPress={() => retryPermissions()}>
+            <Text style={styles.retryBtnText}>Retry Permission</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <FlatList
+          data={contacts}
+          keyExtractor={item => item.id ?? ''}
+          renderItem={({ item }) => <ContactItem {...item} onPress={proceedAmount} />}
+          contentContainerStyle={{ paddingBottom: 24 }}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={loading ? <Text style={{ textAlign: 'center', marginVertical: 12 }}>Loading...</Text> : null}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+    marginTop: 40,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#334155',
+    marginBottom: 10,
+  },
+  emptyDesc: {
+    fontSize: 15,
+    color: '#64748B',
+    textAlign: 'center',
+    marginBottom: 18,
+  },
+  retryBtn: {
+    backgroundColor: '#0F172A',
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
   container: {
     flex: 1,
     backgroundColor: '#F8FAFC',
