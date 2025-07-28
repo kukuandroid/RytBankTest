@@ -17,6 +17,24 @@ export default function TransferAmount() {
 
   const handleTransfer = async () => {
     try {
+      // Local authentication before transfer
+      const LocalAuthentication = await import('expo-local-authentication');
+      const authResult = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Authenticate to send money',
+        fallbackLabel: 'Enter passcode',
+      });
+      if (!authResult.success) {
+        router.replace({
+          pathname: '/dashboard/transfer-acknowledment',
+          params: {
+            status: 'fail',
+            message: 'Authentication failed. Please try again.',
+            amount,
+            contact: [name ?? '', phoneNumber ?? ''],
+          },
+        });
+        return;
+      }
       await postApi('/transfer', {
         amount: parseFloat(amount),
         userId: 'fatimah123', // user id should come from token, this is just a demo
