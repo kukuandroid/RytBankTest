@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Contacts from 'expo-contacts';
 import { router } from 'expo-router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const getAcronym = (name: string = '') => {
@@ -12,16 +12,22 @@ const getAcronym = (name: string = '') => {
     .toUpperCase();
 };
 
-const ContactItem = (item: Contacts.Contact) => (
-  <View style={styles.item}>
-    <View style={styles.avatarAcronym}>
-      <Text style={styles.avatarText}>{getAcronym(item.name)}</Text>
+interface ContactItemProps extends Contacts.Contact {
+  onPress: (item: Contacts.Contact) => void;
+}
+
+const ContactItem = (props: ContactItemProps) => (
+  <TouchableOpacity onPress={() => props.onPress(props)}>
+    <View style={styles.item}>
+      <View style={styles.avatarAcronym}>
+        <Text style={styles.avatarText}>{getAcronym(props.name)}</Text>
+      </View>
+      <View style={styles.info}>
+        <Text style={styles.name}>{props.name}</Text>
+        <Text style={styles.phone}>{props.company}</Text>
+      </View>
     </View>
-    <View style={styles.info}>
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.phone}>{item.company}</Text>
-    </View>
-  </View>
+  </TouchableOpacity>
 );
 
 export default function ContactList() {
@@ -35,7 +41,7 @@ export default function ContactList() {
     setLoading(true);
     const { status } = await Contacts.requestPermissionsAsync();
     if (status === 'granted') {
-      const { data, hasNextPage: next, total, ...rest } = await Contacts.getContactsAsync({
+      const { data, hasNextPage: next } = await Contacts.getContactsAsync({
         fields: [Contacts.Fields.FirstName],
         pageOffset: offset,
         pageSize: PAGE_SIZE,
@@ -57,6 +63,10 @@ export default function ContactList() {
     }
   };
 
+  const proceedAmount = (item: Contacts.Contact) => {
+    router.push({ pathname: '/dashboard/transfer-amount', params: { contactId: item.id } });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
@@ -68,7 +78,7 @@ export default function ContactList() {
       <FlatList
         data={contacts}
         keyExtractor={item => item.id ?? ''}
-        renderItem={({ item }) => <ContactItem {...item} />}
+        renderItem={({ item }) => <ContactItem {...item} onPress={proceedAmount} />}
         contentContainerStyle={{ paddingBottom: 24 }}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
