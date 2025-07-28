@@ -6,14 +6,14 @@ import { useAuth } from '@/context/AuthContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getApi } from "../../utils/api";
 
 const BankDashboard = () => {
     const [showBalance, setShowBalance] = useState(true);
     const [balance, setBalance] = useState<string | null>(null);
     const [loadingBalance, setLoadingBalance] = useState(false);
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchBalance = async () => {
@@ -55,75 +55,82 @@ const BankDashboard = () => {
 
     // Set tab bar height to match your floating tab bar style
     const TAB_BAR_HEIGHT = 64 + 24 + 80; // height + bottom + top margin
+    // Get screen height for dynamic curve
+    const screenHeight = Dimensions.get('window').height; // You can use Dimensions.get('window').height for real device
+    const curveHeight = screenHeight / 2.5;
+
     return (
-        <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT }}>
-            {/* Header */}
-            <View style={styles.header}>
-                <Text style={styles.bankName}>
-                    <Text style={styles.boldText}>Ryt</Text>Bank
-                </Text>
-                <View style={styles.rightIcons}>
-                    <View style={styles.notification}>
-                        <MaterialIcons name='notifications' size={20} color="#fff" />
-                        <View style={styles.badge}><Text style={styles.badgeText}>5</Text></View>
-                    </View>
-                    <TouchableOpacity onPress={() => { }}>
-                        <Image
-                            source={{ uri: 'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-128.png' }}
-                            style={styles.avatar}
-                        />
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            {/* Greeting */}
-            <Text style={styles.greeting}>Welcome Back</Text>
-            <Text style={styles.username}>{user?.name ?? 'N/A'}</Text>
-
-            {/* Account Balance Card */}
-            <View style={styles.balanceCard}>
-                <View style={styles.balanceTop}>
-                    <Text style={styles.balanceTitle}>Account Balance</Text>
-                </View>
-                <View style={styles.balanceValueRow}>
-                    <Text style={styles.balanceAmount}>
-                        {showBalance ? (loadingBalance ? 'Loading...' : balance ? `RM ${balance}` : 'N/A') : '••••••'}
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
+            <View style={[styles.curvyHeaderBg, { height: curveHeight }]} />
+            <ScrollView style={[styles.container, { marginTop: curveHeight / 10 }]} contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT }}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <Text style={styles.bankName}>
+                        <Text style={styles.boldText}>Ryt</Text>Bank
                     </Text>
-                    <TouchableOpacity onPress={() => setShowBalance((prev) => !prev)}>
-                        <MaterialIcons
-                            name={showBalance ? 'remove-red-eye' : 'visibility-off'}
-                            size={20}
-                            color="#fff"
-                            style={styles.showPassword}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.actionRow}>
-                    {actions.map((action, index) => (
-                        <TouchableOpacity key={index} style={styles.actionButton} onPress={() => handleAction(action.key)}>
-                            <MaterialIcons name={action.icon} size={20} color="#fff" />
-                            <Text style={styles.actionLabel}>{action.label}</Text>
+                    <View style={styles.rightIcons}>
+                        <View style={styles.notification}>
+                            <MaterialIcons name='notifications' size={20} color="#fff" />
+                            <View style={styles.badge}><Text style={styles.badgeText}>5</Text></View>
+                        </View>
+                        <TouchableOpacity onPress={() => { }}>
+                            <Image
+                                source={{ uri: 'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-128.png' }}
+                                style={styles.avatar}
+                            />
                         </TouchableOpacity>
-                    ))}
+                    </View>
                 </View>
-            </View>
 
-            {/* Promos & Reminders */}
-            <Text style={styles.sectionTitle}>Promos & Reminders</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
-                {promos.map((item, idx) => (
-                    <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
-                ))}
-            </ScrollView>
+                {/* Greeting */}
+                <Text style={styles.greeting}>Welcome Back</Text>
+                <Text style={styles.username}>{user?.name ?? 'N/A'}</Text>
 
-            {/* Top Reads Section */}
-            <Text style={styles.sectionTitle}>Top Reads</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
-                {topReads.map((item, idx) => (
-                    <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
-                ))}
+                {/* Account Balance Card */}
+                <View style={styles.balanceCard}>
+                    <View style={styles.balanceTop}>
+                        <Text style={styles.balanceTitle}>Account Balance</Text>
+                    </View>
+                    <View style={styles.balanceValueRow}>
+                        <Text style={styles.balanceAmount}>
+                            {showBalance ? (loadingBalance ? 'Loading...' : balance ? `RM ${balance}` : 'N/A') : '••••••'}
+                        </Text>
+                        <TouchableOpacity onPress={() => setShowBalance((prev) => !prev)}>
+                            <MaterialIcons
+                                name={showBalance ? 'remove-red-eye' : 'visibility-off'}
+                                size={20}
+                                color="#fff"
+                                style={styles.showPassword}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.actionRow}>
+                        {actions.map((action, index) => (
+                            <TouchableOpacity key={index} style={styles.actionButton} onPress={() => handleAction(action.key)}>
+                                <MaterialIcons name={action.icon} size={20} color="#fff" />
+                                <Text style={styles.actionLabel}>{action.label}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+
+                {/* Promos & Reminders */}
+                <Text style={styles.sectionTitle}>Promos & Reminders</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
+                    {promos.map((item, idx) => (
+                        <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
+                    ))}
+                </ScrollView>
+
+                {/* Top Reads Section */}
+                <Text style={styles.sectionTitle}>Top Reads</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
+                    {topReads.map((item, idx) => (
+                        <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
+                    ))}
+                </ScrollView>
             </ScrollView>
-        </ScrollView>
+        </View>
     );
 };
 
@@ -133,9 +140,19 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#0F172A',
+        backgroundColor: 'transparent',
         paddingTop: 50,
         paddingHorizontal: 20,
+    },
+    curvyHeaderBg: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#0F172A',
+        borderBottomLeftRadius: 100,
+        borderBottomRightRadius: 100,
+        zIndex: 0,
     },
     showPassword: {
         marginLeft: 10,
@@ -190,7 +207,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     balanceCard: {
-        backgroundColor: Colors.light.background,
+        backgroundColor: Colors.light.primaryColor,
         borderRadius: 32,
         padding: 20,
         marginBottom: 20,

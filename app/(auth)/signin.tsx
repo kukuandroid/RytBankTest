@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useState } from 'react';
@@ -114,7 +115,7 @@ const SignInScreen: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0101e5', // A warm yellow color
+        backgroundColor: Colors.light.background, // A warm yellow color
     },
     topSection: {
         justifyContent: 'center',
