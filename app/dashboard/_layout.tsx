@@ -20,6 +20,14 @@ export default function DashboardLayout() {
                     headerTitleStyle: { color: "#fff" },
                 }}
             />
+            <Stack.Screen
+                name="transfer-amount"
+                options={{
+                    title: 'Transfer Amount',
+                    headerStyle: { backgroundColor: Colors.light.background },
+                    headerTitleStyle: { color: "#fff" },
+                }}
+            />
 
         </Stack>
     );
