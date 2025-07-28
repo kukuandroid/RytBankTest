@@ -1,30 +1,34 @@
 
 import InfoCard from '@/components/ui/InfoCard';
 import { actions } from '@/constants/Actions';
+import { Colors } from '@/constants/Colors';
+import { useAuth } from '@/context/AuthContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { getApi } from "../../utils/api";
 
 const BankDashboard = () => {
     const [showBalance, setShowBalance] = useState(true);
     const [balance, setBalance] = useState<string | null>(null);
     const [loadingBalance, setLoadingBalance] = useState(false);
+    const { user, logout } = useAuth();
 
     useEffect(() => {
-        // const fetchBalance = async () => {
-        //     setLoadingBalance(true);
-        //     try {
-        //         const res = await apiFetch(`/account-balance?userId=${122}`);
-        //         setBalance(res.balance);
-        //     } catch (err) {
-        //         setBalance(null);
-        //     } finally {
-        //         setLoadingBalance(false);
-        //     }
-        // };
-        // fetchBalance();
-    }, [213]);
+        const fetchBalance = async () => {
+            setLoadingBalance(true);
+            try {
+                const res = await getApi<{ balance: string }>('/account-balance');
+                setBalance(res.balance);
+            } catch (err) {
+                setBalance(null);
+            } finally {
+                setLoadingBalance(false);
+            }
+        };
+        fetchBalance();
+    }, [balance]);
 
     const topReads = [
         { title: 'How to Save Money', subtitle: 'Tips for better savings', image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80' },
@@ -73,8 +77,8 @@ const BankDashboard = () => {
             </View>
 
             {/* Greeting */}
-            <Text style={styles.greeting}>Good Evening</Text>
-            <Text style={styles.username}>{'name'}</Text>
+            <Text style={styles.greeting}>Welcome Back</Text>
+            <Text style={styles.username}>{user?.name ?? 'N/A'}</Text>
 
             {/* Account Balance Card */}
             <View style={styles.balanceCard}>
@@ -147,7 +151,7 @@ const styles = StyleSheet.create({
     },
     boldText: {
         fontWeight: 'bold',
-        color: '#0101e5',
+        color: Colors.light.background,
     },
     rightIcons: {
         flexDirection: 'row',
@@ -186,7 +190,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     balanceCard: {
-        backgroundColor: '#0101e5',
+        backgroundColor: Colors.light.background,
         borderRadius: 32,
         padding: 20,
         marginBottom: 20,
