@@ -45,7 +45,7 @@ const BankDashboard = () => {
         switch (key) {
             case 'transfer':
                 // Handle transfer action
-                router.push('/dashboard/transfer');
+                router.push('/dashboard/contact-list');
                 break;
 
             default:
