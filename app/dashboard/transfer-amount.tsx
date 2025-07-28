@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/Colors';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { postApi } from '../../utils/api';
@@ -20,15 +21,29 @@ export default function TransferAmount() {
         amount: parseFloat(amount),
         userId: 'fatimah123', // user id should come from token, this is just a demo
         note,
-        toAccount: contact.mobile, // Assuming mobile is used as contact ID
+        toAccount: contact.mobile, // Assuming mobile is used as constact ID
       });
-      alert('Transfer successful!');
-      setAmount('');
-      setNote('');
+      router.push({
+        pathname: '/dashboard/transfer-acknowledment',
+        params: {
+          status: 'success',
+          message: 'Transfer successful',
+          amount,
+          contact: [contact.name, contact.mobile],
+        },
+      });
     } catch (error) {
-      console.error(error);
-      alert('An error occurred while processing the transfer. Please try again.');
-    };
+      router.replace({
+        pathname: '/dashboard/transfer-acknowledment',
+        params: {
+          status: 'fail',
+          message: 'An error occurred while processing the transfer. Please try again.',
+          amount,
+          contact: [contact.name, contact.mobile],
+        },
+      });
+      console.log(error);
+    }
   }
 
   return (
