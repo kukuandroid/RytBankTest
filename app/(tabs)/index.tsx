@@ -1,5 +1,6 @@
 
 import InfoCard from '@/components/ui/InfoCard';
+import { ToastBar, showToast } from '@/components/ui/ToastBar';
 import { actions } from '@/constants/Actions';
 import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
@@ -21,8 +22,18 @@ const BankDashboard = () => {
             try {
                 const res = await getApi<{ balance: string }>('/account-balance');
                 setBalance(res.balance);
+                showToast({
+                    type: 'success',
+                    text1: 'Balance Updated',
+                    text2: `Your balance is RM ${res.balance}`,
+                });
             } catch (err) {
                 setBalance(null);
+                showToast({
+                    type: 'error',
+                    text1: 'Failed to update balance',
+                    text2: 'Please try again later.',
+                });
             } finally {
                 setLoadingBalance(false);
             }
@@ -49,6 +60,11 @@ const BankDashboard = () => {
                 break;
 
             default:
+                showToast({
+                    type: 'info',
+                    text1: 'Undergo Maintenance',
+                    text2: `Please try again later.`,
+                });
                 break;
         }
     }
@@ -60,77 +76,80 @@ const BankDashboard = () => {
     const curveHeight = screenHeight / 2.5;
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#fff' }}>
-            <View style={[styles.curvyHeaderBg, { height: curveHeight }]} />
-            <ScrollView style={[styles.container, { marginTop: curveHeight / 10 }]} contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT }}>
-                {/* Header */}
-                <View style={styles.header}>
-                    <Text style={styles.bankName}>
-                        <Text style={styles.boldText}>Ryt</Text>Bank
-                    </Text>
-                    <View style={styles.rightIcons}>
-                        <View style={styles.notification}>
-                            <MaterialIcons name='notifications' size={20} color="#fff" />
-                            <View style={styles.badge}><Text style={styles.badgeText}>5</Text></View>
-                        </View>
-                        <TouchableOpacity onPress={() => { }}>
-                            <Image
-                                source={{ uri: 'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-128.png' }}
-                                style={styles.avatar}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                {/* Greeting */}
-                <Text style={styles.greeting}>Welcome Back</Text>
-                <Text style={styles.username}>{user?.name ?? 'N/A'}</Text>
-
-                {/* Account Balance Card */}
-                <View style={styles.balanceCard}>
-                    <View style={styles.balanceTop}>
-                        <Text style={styles.balanceTitle}>Account Balance</Text>
-                    </View>
-                    <View style={styles.balanceValueRow}>
-                        <Text style={styles.balanceAmount}>
-                            {showBalance ? (loadingBalance ? 'Loading...' : balance ? `RM ${balance}` : 'N/A') : '••••••'}
+        <>
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
+                <View style={[styles.curvyHeaderBg, { height: curveHeight }]} />
+                <ScrollView style={[styles.container, { marginTop: curveHeight / 10 }]} contentContainerStyle={{ paddingBottom: TAB_BAR_HEIGHT }}>
+                    {/* Header */}
+                    <View style={styles.header}>
+                        <Text style={styles.bankName}>
+                            <Text style={styles.boldText}>Ryt</Text>Bank
                         </Text>
-                        <TouchableOpacity onPress={() => setShowBalance((prev) => !prev)}>
-                            <MaterialIcons
-                                name={showBalance ? 'remove-red-eye' : 'visibility-off'}
-                                size={20}
-                                color="#fff"
-                                style={styles.showPassword}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.actionRow}>
-                        {actions.map((action, index) => (
-                            <TouchableOpacity key={index} style={styles.actionButton} onPress={() => handleAction(action.key)}>
-                                <MaterialIcons name={action.icon} size={20} color="#fff" />
-                                <Text style={styles.actionLabel}>{action.label}</Text>
+                        <View style={styles.rightIcons}>
+                            <View style={styles.notification}>
+                                <MaterialIcons name='notifications' size={20} color="#fff" />
+                                <View style={styles.badge}><Text style={styles.badgeText}>5</Text></View>
+                            </View>
+                            <TouchableOpacity onPress={() => { }}>
+                                <Image
+                                    source={{ uri: 'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-128.png' }}
+                                    style={styles.avatar}
+                                />
                             </TouchableOpacity>
-                        ))}
+                        </View>
                     </View>
-                </View>
 
-                {/* Promos & Reminders */}
-                <Text style={styles.sectionTitle}>Promos & Reminders</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
-                    {promos.map((item, idx) => (
-                        <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
-                    ))}
-                </ScrollView>
+                    {/* Greeting */}
+                    <Text style={styles.greeting}>Welcome Back</Text>
+                    <Text style={styles.username}>{user?.name ?? 'N/A'}</Text>
 
-                {/* Top Reads Section */}
-                <Text style={styles.sectionTitle}>Top Reads</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
-                    {topReads.map((item, idx) => (
-                        <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
-                    ))}
+                    {/* Account Balance Card */}
+                    <View style={styles.balanceCard}>
+                        <View style={styles.balanceTop}>
+                            <Text style={styles.balanceTitle}>Account Balance</Text>
+                        </View>
+                        <View style={styles.balanceValueRow}>
+                            <Text style={styles.balanceAmount}>
+                                {showBalance ? (loadingBalance ? 'Loading...' : balance ? `RM ${balance}` : 'N/A') : '••••••'}
+                            </Text>
+                            <TouchableOpacity onPress={() => setShowBalance((prev) => !prev)}>
+                                <MaterialIcons
+                                    name={showBalance ? 'remove-red-eye' : 'visibility-off'}
+                                    size={20}
+                                    color="#fff"
+                                    style={styles.showPassword}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.actionRow}>
+                            {actions.map((action, index) => (
+                                <TouchableOpacity key={index} style={styles.actionButton} onPress={() => handleAction(action.key)}>
+                                    <MaterialIcons name={action.icon} size={20} color="#fff" />
+                                    <Text style={styles.actionLabel}>{action.label}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+
+                    {/* Promos & Reminders */}
+                    <Text style={styles.sectionTitle}>Promos & Reminders</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
+                        {promos.map((item, idx) => (
+                            <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
+                        ))}
+                    </ScrollView>
+
+                    {/* Top Reads Section */}
+                    <Text style={styles.sectionTitle}>Top Reads</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
+                        {topReads.map((item, idx) => (
+                            <InfoCard image={item.image} title={item.title} subtitle={item.subtitle} key={item.title} />
+                        ))}
+                    </ScrollView>
                 </ScrollView>
-            </ScrollView>
-        </View>
+            </View>
+            <ToastBar />
+        </>
     );
 };
 
