@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     },
     boldText: {
         fontWeight: 'bold',
-        color: Colors.light.background,
+        color: Colors.light.primaryColor,
     },
     rightIcons: {
         flexDirection: 'row',
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 16,
         fontWeight: '600',
-        color: '#fff',
+        color: '#000',
         marginBottom: 10,
     },
     promosContainer: {
