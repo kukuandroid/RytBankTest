@@ -1,19 +1,19 @@
 import { Colors } from '@/constants/Colors';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { postApi } from '../../utils/api';
 
-// Dummy contact for demo. Replace with props or navigation params.
-const contact = {
-  name: 'Khairul Husni',
-  mobile: '012-3456789',
-};
 const getAcronym = (name = '') => name.split(' ').map(w => w[0]).join('').toUpperCase();
 
 export default function TransferAmount() {
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
+  const { contactId = null, name = null, phoneNumber = null } = useLocalSearchParams() as {
+    contactId: string | null ; 
+    name: string | null;
+    phoneNumber: string | null;
+  };
 
   const handleTransfer = async () => {
     try {
@@ -21,7 +21,7 @@ export default function TransferAmount() {
         amount: parseFloat(amount),
         userId: 'fatimah123', // user id should come from token, this is just a demo
         note,
-        toAccount: contact.mobile, // Assuming mobile is used as constact ID
+        toAccount: name, // Assuming mobile is used as constact ID
       });
       router.push({
         pathname: '/dashboard/transfer-acknowledment',
@@ -29,7 +29,7 @@ export default function TransferAmount() {
           status: 'success',
           message: 'Transfer successful',
           amount,
-          contact: [contact.name, contact.mobile],
+          contact: [name ?? '', phoneNumber ?? ''],
         },
       });
     } catch (error) {
@@ -39,7 +39,7 @@ export default function TransferAmount() {
           status: 'fail',
           message: 'An error occurred while processing the transfer. Please try again.',
           amount,
-          contact: [contact.name, contact.mobile],
+          contact: [name ?? "", phoneNumber?? ""],
         },
       });
       console.log(error);
@@ -57,11 +57,11 @@ export default function TransferAmount() {
           <Text style={styles.title}>Transfer Funds</Text>
           <View style={styles.tile}>
             <View style={styles.avatarAcronym}>
-              <Text style={styles.avatarText}>{getAcronym(contact.name)}</Text>
+              <Text style={styles.avatarText}>{getAcronym(name ?? undefined)}</Text>
             </View>
             <View>
-              <Text style={styles.personName}>{contact.name}</Text>
-              <Text style={styles.personMobile}>{contact.mobile}</Text>
+              <Text style={styles.personName}>{name}</Text>
+              <Text style={styles.personMobile}>{phoneNumber}</Text>
             </View>
           </View>
           <Text style={styles.label}>Amount</Text>

@@ -29,11 +29,6 @@ const styles = StyleSheet.create({
     width: 180,
     minHeight: 110,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    elevation: 6,
     display: 'flex',
   },
   infoCardImage: {

@@ -1,4 +1,3 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import * as Contacts from 'expo-contacts';
 import { router } from 'expo-router';
 import React from 'react';
@@ -24,7 +23,7 @@ const ContactItem = (props: ContactItemProps) => (
       </View>
       <View style={styles.info}>
         <Text style={styles.name}>{props.name}</Text>
-        <Text style={styles.phone}>{props.company}</Text>
+        <Text style={styles.phone}>{props.phoneNumbers?.[0]?.number}</Text>
       </View>
     </View>
   </TouchableOpacity>
@@ -42,7 +41,6 @@ export default function ContactList() {
     const { status } = await Contacts.requestPermissionsAsync();
     if (status === 'granted') {
       const { data, hasNextPage: next } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.FirstName],
         pageOffset: offset,
         pageSize: PAGE_SIZE,
       });
@@ -64,15 +62,12 @@ export default function ContactList() {
   };
 
   const proceedAmount = (item: Contacts.Contact) => {
-    router.push({ pathname: '/dashboard/transfer-amount', params: { contactId: item.id } });
+    router.push({ pathname: '/dashboard/transfer-amount', params: { contactId: item.id, name: item.name, phoneNumber: item?.phoneNumbers?.[0]?.number } });
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <MaterialIcons name="arrow-back" size={24} color="#1E293B" />
-        </TouchableOpacity>
         <Text style={styles.title}>Choose Contacts</Text>
       </View>
       <FlatList

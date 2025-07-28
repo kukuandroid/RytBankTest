@@ -7,6 +7,7 @@ export default function DashboardLayout() {
             {
                 headerStyle: { backgroundColor: Colors.light.background },
                 headerTitleStyle: { color: "#fff" },
+                headerTintColor: "#fff",
             }
         } >
             <Stack.Screen
