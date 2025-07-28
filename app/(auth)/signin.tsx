@@ -1,6 +1,7 @@
+import { useAuth } from '@/context/AuthContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useState } from 'react';
-import { Alert, Dimensions, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
 const { height } = Dimensions.get('window');
 
@@ -8,12 +9,24 @@ const SignInScreen: React.FC = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
+    const { login } = useAuth();
 
     const handleLogin = async () => {
         try {
-            // React Query's onSuccess will handle updating the 'auth' query and AsyncStorage
-            // The RootLayout will automatically redirect because isAuthenticated will become true
+            if (!username.trim() || !password.trim()) {
+                Alert.alert('Error', 'Please enter both email and password');
+                return;
+            }
+            setIsLoading(true);
+            try {
+                await login(username, password);
+            } catch (error) {
+                Alert.alert('Login Failed', error instanceof Error ? error.message : 'Please try again');
+            } finally {
+                setIsLoading(false);
+            }
         } catch (error: any) {
             Alert.alert("Login Failed", error.message || "An unexpected error occurred.");
         }
@@ -80,9 +93,11 @@ const SignInScreen: React.FC = () => {
                             </View>
 
                             {/* Login Account Button */}
-                            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                            {isLoading ? (
+                                <ActivityIndicator color="white" />
+                            ) : <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                                 <Text style={styles.loginButtonText}>Login Account</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>}
 
                             {/* Create New Account */}
                             <TouchableOpacity style={styles.createAccountButton} onPress={() => alert("Disabled in demo demo")}>

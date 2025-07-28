@@ -63,7 +63,7 @@ const BankDashboard = () => {
                         <MaterialIcons name='notifications' size={20} color="#fff" />
                         <View style={styles.badge}><Text style={styles.badgeText}>5</Text></View>
                     </View>
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity onPress={() => { }}>
                         <Image
                             source={{ uri: 'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-128.png' }}
                             style={styles.avatar}
