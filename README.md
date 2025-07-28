@@ -2,9 +2,10 @@
 
 ## Get started
 
-1. Install dependencies
-
-   ```npm install```
+1. Install/Verify expo and project dependencies
+ ```
+ npx expo -h && npx expo start
+ ```
 
 2. Change API endpoint
 
@@ -13,10 +14,14 @@
  ```
 
 3. Start the app
+ ```
+ npx expo start
+ ```
 
-   ```bash
-   npx expo start
-   ```
+4. Use real device to test
+ ```
+ Use expo go app by scanning the QRCode
+ ```
 
 ## User crendentials
  ```  { username: 'fatimah', password: 'pass1234' } ```
