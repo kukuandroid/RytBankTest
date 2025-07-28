@@ -2,6 +2,7 @@
 import InfoCard from '@/components/ui/InfoCard';
 import { actions } from '@/constants/Actions';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -40,7 +41,7 @@ const BankDashboard = () => {
         switch (key) {
             case 'transfer':
                 // Handle transfer action
-                // router.navigate('/home/Transfer');
+                router.push('/dashboard/transfer');
                 break;
 
             default:
