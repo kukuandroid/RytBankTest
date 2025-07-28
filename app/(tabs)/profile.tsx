@@ -12,7 +12,6 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 type MaterialCommunityIconName = ComponentProps<typeof MaterialCommunityIcons>['name'];
 
@@ -32,36 +31,27 @@ const ProfileScreen: React.FC = () => {
     }
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.curveContainer}>
-                <Svg height="180" width="100%" viewBox="0 0 400 180" style={styles.curveSvg}>
-                    <Path
-                        d="M0,0 Q200,80 400,0 L400,180 L0,180 Z"
-                        fill="#E6EFEA"
-                    />
-                </Svg>
-                <Text style={styles.headerTitle}>Profile</Text>
-                <View style={styles.profilePicWrapper}>
-                    <View style={styles.profilePicContainer}>
-                        <Image
-                            source={{ uri: 'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-256.png' }}
-                            style={styles.profilePic}
-                        />
-                    </View>
-                </View>
-            </View>
             <ScrollView contentContainerStyle={styles.scrollContent}>
+                {/* Profile Picture */}
+                <View style={styles.profilePicContainer}>
+                    <Image
+                        source={{ uri: 'https://cdn2.iconfinder.com/data/icons/avatars-60/5985/24-Maid-256.png' }} // Replace with actual user profile image URI
+                        style={styles.profilePic}
+                    />
+                </View>
+
                 {/* User Name and Role */}
                 <Text style={styles.userName}>{user?.name ?? "N/A"}</Text>
 
                 {/* Menu Items */}
                 <View style={styles.menuContainer}>
                     <ProfileMenuItem
-                        iconName="face-man-profile"
+                        iconName="face-man-profile" // Icon for Edit Profile
                         title="Edit Profile"
                         onPress={() => console.log('Edit Profile pressed')}
                     />
                     <ProfileMenuItem
-                        iconName="onepassword"
+                        iconName="onepassword" // Icon for Change Password
                         title="Change Password"
                         onPress={() => console.log('Change Password pressed')}
                     />
@@ -99,29 +89,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-    curveContainer: {
-        position: 'relative',
-        alignItems: 'center',
-        marginBottom: -60,
-    },
-    curveSvg: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 0,
-    },
-    profilePicWrapper: {
-        position: 'absolute',
-        top: 100,
-        left: 0,
-        right: 0,
-        alignItems: 'center',
-        zIndex: 1,
-    },
     scrollContent: {
-        paddingTop: 80,
-        paddingBottom: 20,
         alignItems: 'center',
     },
     headerTitle: {
