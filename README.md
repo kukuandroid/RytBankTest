@@ -26,4 +26,10 @@
 ## User crendentials
  ```  { username: 'fatimah', password: 'pass1234' } ```
 
+## Video
+
+
+https://github.com/user-attachments/assets/f6bad04f-9783-4349-92fb-a816b1a19397
+
+
 This is hardcode data in backend, the account balance also are prepopulated from backend
