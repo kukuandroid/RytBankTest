@@ -33,3 +33,13 @@ https://github.com/user-attachments/assets/f6bad04f-9783-4349-92fb-a816b1a19397
 
 
 This is hardcode data in backend, the account balance also are prepopulated from backend
+
+## Challenges
+
+1. Maintaining Type Safety
+
+Using TypeScript required strict typing, especially for transactions and reusable components. This prevented bugs but added some complexity for props.
+
+2. Time constraint and tasks management
+
+During the completion of this assessment, I was concurrently managing ongoing responsibilities at my current company, including the deployment of a banking application, while also balancing personal commitments and family time. Despite the busy schedule, I remained committed to delivering this task with focus and quality.
