@@ -1,8 +1,9 @@
+import { ToastBar, showToast } from '@/components/ui/ToastBar';
 import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 
 const { height } = Dimensions.get('window');
 
@@ -17,98 +18,118 @@ const SignInScreen: React.FC = () => {
     const handleLogin = async () => {
         try {
             if (!username.trim() || !password.trim()) {
-                Alert.alert('Error', 'Please enter both email and password');
+                showToast({
+                  type: 'error',
+                  text1: 'Error',
+                  text2: 'Please enter both email and password',
+                });
                 return;
             }
             setIsLoading(true);
             try {
                 await login(username, password);
+                showToast({
+                  type: 'success',
+                  text1: 'Login Successful',
+                  text2: `Welcome, ${username}!`,
+                });
             } catch (error) {
-                Alert.alert('Login Failed', error instanceof Error ? error.message : 'Please try again');
+                showToast({
+                  type: 'error',
+                  text1: 'Login Failed',
+                  text2: error instanceof Error ? error.message : 'Please try again',
+                });
             } finally {
                 setIsLoading(false);
             }
         } catch (error: any) {
-            Alert.alert("Login Failed", error.message || "An unexpected error occurred.");
+            showToast({
+              type: 'error',
+              text1: 'Login Failed',
+              text2: error.message || 'An unexpected error occurred.',
+            });
         }
     };
 
 
     const [showPassword, setShowPassword] = useState(false);
     return (
-        <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{ flex: 1 }}
-            >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-                        {/* Top Yellow Section */}
-                        <View style={styles.topSection}>
-                            <Text style={styles.helloText}>Hello</Text>
-                            <Text style={styles.welcomeBackText}>Welcome Back!</Text>
-                        </View>
+        <>
+          <SafeAreaView style={styles.container}>
+              <KeyboardAvoidingView
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  style={{ flex: 1 }}
+              >
+                  <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+                          {/* Top Yellow Section */}
+                          <View style={styles.topSection}>
+                              <Text style={styles.helloText}>Hello</Text>
+                              <Text style={styles.welcomeBackText}>Welcome Back!</Text>
+                          </View>
 
-                        {/* Login Card */}
-                        <View style={styles.loginCard}>
-                            <Text style={styles.loginAccountTitle}>Login Account</Text>
-                            <Text style={styles.loginDescription}>
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing sed diam nonummy nibh euismod tincidunt
-                            </Text>
+                          {/* Login Card */}
+                          <View style={styles.loginCard}>
+                              <Text style={styles.loginAccountTitle}>Login Account</Text>
+                              <Text style={styles.loginDescription}>
+                                  Lorem ipsum dolor sit amet, consectetuer adipiscing sed diam nonummy nibh euismod tincidunt
+                              </Text>
 
-                            {/* Email Address Input */}
-                            <Text style={styles.inputLabel}>Username</Text>
-                            <View style={styles.inputContainer}>
-                                <TextInput
-                                    style={styles.textInput}
-                                    placeholder="Your Username"
-                                    keyboardType="default"
-                                    onChangeText={setUsername}
-                                />
-                            </View>
+                              {/* Email Address Input */}
+                              <Text style={styles.inputLabel}>Username</Text>
+                              <View style={styles.inputContainer}>
+                                  <TextInput
+                                      style={styles.textInput}
+                                      placeholder="Your Username"
+                                      keyboardType="default"
+                                      onChangeText={setUsername}
+                                  />
+                              </View>
 
-                            {/* Password Input */}
-                            <Text style={styles.inputLabel}>Password</Text>
-                            <View style={styles.inputContainer}>
-                                <TextInput
-                                    style={styles.textInput}
-                                    placeholder="********"
-                                    secureTextEntry={!showPassword}
-                                    onChangeText={setPassword}
-                                />
-                                <TouchableOpacity onPress={() => setShowPassword((prev) => !prev)}>
-                                    <MaterialIcons
-                                        name={showPassword ? 'visibility-off' : 'remove-red-eye'}
-                                        size={24}
-                                        color="#888"
-                                        style={styles.inputIcon}
-                                    />
-                                </TouchableOpacity>
-                            </View>
+                              {/* Password Input */}
+                              <Text style={styles.inputLabel}>Password</Text>
+                              <View style={styles.inputContainer}>
+                                  <TextInput
+                                      style={styles.textInput}
+                                      placeholder="********"
+                                      secureTextEntry={!showPassword}
+                                      onChangeText={setPassword}
+                                  />
+                                  <TouchableOpacity onPress={() => setShowPassword((prev) => !prev)}>
+                                      <MaterialIcons
+                                          name={showPassword ? 'visibility-off' : 'remove-red-eye'}
+                                          size={24}
+                                          color="#888"
+                                          style={styles.inputIcon}
+                                      />
+                                  </TouchableOpacity>
+                              </View>
 
-                            {/* Save Password & Forgot Password */}
-                            <View style={styles.optionsContainer}>
-                                <TouchableOpacity onPress={() => alert("Disabled in demo mode")}>
-                                    <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-                                </TouchableOpacity>
-                            </View>
+                              {/* Save Password & Forgot Password */}
+                              <View style={styles.optionsContainer}>
+                                  <TouchableOpacity onPress={() => showToast({ type: 'info', text1: 'Demo Mode', text2: 'Forgot password is disabled in demo.' })}> 
+                                      <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                                  </TouchableOpacity>
+                              </View>
 
-                            {/* Login Account Button */}
-                            {isLoading ? (
-                                <ActivityIndicator color="white" />
-                            ) : <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                                <Text style={styles.loginButtonText}>Login Account</Text>
-                            </TouchableOpacity>}
+                              {/* Login Account Button */}
+                              {isLoading ? (
+                                  <ActivityIndicator color="white" />
+                              ) : <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                                  <Text style={styles.loginButtonText}>Login Account</Text>
+                              </TouchableOpacity>}
 
-                            {/* Create New Account */}
-                            <TouchableOpacity style={styles.createAccountButton} onPress={() => alert("Disabled in demo demo")}>
-                                <Text style={styles.createAccountText}>Create New Account</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollView>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+                              {/* Create New Account */}
+                              <TouchableOpacity style={styles.createAccountButton} onPress={() => showToast({ type: 'info', text1: 'Demo Mode', text2: 'Create account is disabled in demo.' })}> 
+                                  <Text style={styles.createAccountText}>Create New Account</Text>
+                              </TouchableOpacity>
+                          </View>
+                      </ScrollView>
+                  </TouchableWithoutFeedback>
+              </KeyboardAvoidingView>
+          </SafeAreaView>
+          <ToastBar />
+        </>
     );
 };
 

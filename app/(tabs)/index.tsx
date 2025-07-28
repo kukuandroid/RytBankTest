@@ -11,6 +11,30 @@ import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View
 import { getApi } from "../../utils/api";
 
 const BankDashboard = () => {
+    // Dummy last transactions
+    const lastTransactions = [
+        {
+            id: '1',
+            name: 'Fatimah Binti Ali',
+            amount: '-RM 120.00',
+            date: '2025-07-28',
+            type: 'Transfer',
+        },
+        {
+            id: '2',
+            name: 'Ahmad Bin Salleh',
+            amount: '+RM 500.00',
+            date: '2025-07-27',
+            type: 'Received',
+        },
+        {
+            id: '3',
+            name: 'Siti Nurhaliza',
+            amount: '-RM 50.00',
+            date: '2025-07-26',
+            type: 'Transfer',
+        },
+    ];
     const [showBalance, setShowBalance] = useState(true);
     const [balance, setBalance] = useState<string | null>(null);
     const [loadingBalance, setLoadingBalance] = useState(false);
@@ -131,6 +155,33 @@ const BankDashboard = () => {
                         </View>
                     </View>
 
+                    {/* Last Transactions */}
+                    <View style={styles.transactionHeaderRow}>
+                        <Text style={styles.sectionTitle}>Last Transactions</Text>
+                        <TouchableOpacity style={styles.viewAllBtn} onPress={() => showToast({ type: 'info', text1: 'Coming Soon', text2: 'View all transactions feature coming soon.' })}>
+                            <Text style={styles.viewAllText}>View All</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.transactionList}>
+                        {lastTransactions.map(tx => (
+                            <View key={tx.id} style={styles.transactionTile}>
+                                <View style={styles.transactionLeft}>
+                                    <View style={styles.transactionAvatar}>
+                                        <Text style={styles.transactionAvatarText}>{tx.name.split(' ').map(w => w[0]).join('').toUpperCase()}</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.transactionName}>{tx.name}</Text>
+                                        <Text style={styles.transactionType}>{tx.type}</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.transactionRight}>
+                                    <Text style={[styles.transactionAmount, tx.amount.startsWith('-') ? styles.amountOut : styles.amountIn]}>{tx.amount}</Text>
+                                    <Text style={styles.transactionDate}>{tx.date}</Text>
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+
                     {/* Promos & Reminders */}
                     <Text style={styles.sectionTitle}>Promos & Reminders</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.infoCardsScroll} contentContainerStyle={{ paddingRight: 8 }}>
@@ -154,6 +205,84 @@ const BankDashboard = () => {
 };
 
 const styles = StyleSheet.create({
+    transactionHeaderRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 4,
+    },
+    viewAllBtn: {
+        paddingHorizontal: 10,
+        paddingVertical: 2,
+        borderRadius: 8,
+        backgroundColor: '#F1F5F9',
+    },
+    viewAllText: {
+        fontSize: 12,
+        color: '#0F172A',
+        fontWeight: '600',
+    },
+    transactionList: {
+        marginBottom: 24,
+    },
+    transactionTile: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 14,
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.06,
+        shadowRadius: 6,
+        elevation: 2,
+        justifyContent: 'space-between',
+    },
+    transactionLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    transactionAvatar: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: '#e2e8f0',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+    },
+    transactionAvatarText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    transactionName: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: '#0F172A',
+    },
+    transactionType: {
+        fontSize: 12,
+        color: '#64748B',
+    },
+    transactionRight: {
+        alignItems: 'flex-end',
+    },
+    transactionAmount: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    amountOut: {
+        color: '#EF4444',
+    },
+    amountIn: {
+        color: '#22C55E',
+    },
+    transactionDate: {
+        fontSize: 12,
+        color: '#94A3B8',
+        marginTop: 2,
+    },
     infoCardsScroll: {
         marginBottom: 24,
     },

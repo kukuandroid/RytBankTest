@@ -1,4 +1,5 @@
 import ActionButton from '@/components/ui/ActionButton';
+import { showToast } from '@/components/ui/ToastBar';
 import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -46,14 +47,22 @@ const ProfileScreen: React.FC = () => {
                 {/* Menu Items */}
                 <View style={styles.menuContainer}>
                     <ProfileMenuItem
-                        iconName="face-man-profile" // Icon for Edit Profile
+                        iconName="face-man-profile" 
                         title="Edit Profile"
-                        onPress={() => console.log('Edit Profile pressed')}
+                        onPress={() => showToast({
+                            type: 'info',
+                            text1: 'Feature Under Development',
+                            text2: 'This feature is currently under development and will be available soon.',
+                        })}
                     />
                     <ProfileMenuItem
-                        iconName="onepassword" // Icon for Change Password
+                        iconName="onepassword" 
                         title="Change Password"
-                        onPress={() => console.log('Change Password pressed')}
+                        onPress={() => showToast({
+                            type: 'info',
+                            text1: 'Feature Under Development',
+                            text2: 'This feature is currently under development and will be available soon.',
+                        })}
                     />
                 </View>
 

@@ -10,7 +10,7 @@ export default function TransferAmount() {
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const { contactId = null, name = null, phoneNumber = null } = useLocalSearchParams() as {
-    contactId: string | null ; 
+    contactId: string | null;
     name: string | null;
     phoneNumber: string | null;
   };
@@ -50,14 +50,14 @@ export default function TransferAmount() {
           contact: [name ?? '', phoneNumber ?? ''],
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       router.replace({
         pathname: '/dashboard/transfer-acknowledment',
         params: {
           status: 'fail',
-          message: 'An error occurred while processing the transfer. Please try again.',
+          message: error?.response.data.error ?? "An unexpected error occurred",
           amount,
-          contact: [name ?? "", phoneNumber?? ""],
+          contact: [name ?? "", phoneNumber ?? ""],
         },
       });
       console.log(error);

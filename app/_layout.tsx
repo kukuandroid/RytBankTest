@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 function RootLayoutNav() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -36,13 +37,13 @@ function RootLayoutNav() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="(tabs)" />
-      <Stack.Screen 
-        name="profile/edit" 
-        options={{ 
+      <Stack.Screen
+        name="profile/edit"
+        options={{
           presentation: 'modal',
           headerShown: true,
           title: 'Edit Profile'
-        }} 
+        }}
       />
     </Stack>
   );
@@ -52,6 +53,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <RootLayoutNav />
+      <Toast />
     </AuthProvider>
   );
 }
