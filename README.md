@@ -20,7 +20,7 @@
 
 4. Use real device to test
  ```
- Use expo go app by scanning the QRCode
+ Use expo go (Android ) app by scanning the QRCode
  ```
 
 ## User crendentials
